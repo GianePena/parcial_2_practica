@@ -39,7 +39,7 @@ Santiago,Vargas,2023-2M-002
 Cada alumno contiene:
 - **nombre**: String (texto)
 - **apellido**: String (texto)
-- **ID**: String único (identificador)
+- **ID**: String(identificador)
 - **año**: Extraído automáticamente de la ruta del archivo
 - **división**: Turno (mañana/tarde)
 - **ruta_archivo**: Ubicación del CSV correspondiente
