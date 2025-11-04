@@ -9,16 +9,25 @@ def validar_texto(texto):#VALIDAR TEXTO
         print("Error: ", e)
         return False
 
-def pedir_id(alumnos):
+def pedir_id(alumnos, accion=None):
     while True:
         id = input("Ingrese el ID del alumno: ").strip()
         if len(id) == 0:
             print("Error: ID vacío, ingrese un ID")
             continue
-        if not buscar_por_ID(alumnos, id):
-            print(f"El alumno con ID '{id}' no existe")
-            continue
-        break
+        if accion == "crear":
+            if buscar_por_ID(alumnos, id):
+                print(f"Error: El ID '{id}' ya existe. Ingrese un ID diferente.")
+                continue
+            else:
+                return id 
+        elif accion is None:
+            if not buscar_por_ID(alumnos, id):
+                print(f"El alumno con ID '{id}' no existe")
+                continue
+            else:
+                return id
+    
     return id
 
 def buscar_por_ID(alumnos, ID):#BUSCAR ALUMNO POR ID
@@ -41,14 +50,28 @@ def normalizar_diccionario(nombre, apellido, id):
     }
     return alumno_csv
 
-
+def crear_alumno(nombre, apellido, id, ruta_archivo, año, division):
+    nuevo_alumno = {
+        "nombre": nombre,
+        "apellido": apellido,
+        "ID": id,
+        "ruta_archivo": ruta_archivo,
+        "año": año,
+        "division": division
+    }
+    return nuevo_alumno
 def mostrar_menu():
     print('--- MENU PRINCIPAL ---')
-    print('1- Mostrar inventario.')
-    print('2- Agregar instrumentos.')
-    print('3- Editar unidades.')
-    print('4- Eliminar instrumento.')
-    print('5- Mostrar sin stock.')
-    print('6- Vender / Comprar')
-    print('7- Consultar stock.')
-    print('8- Salir.')
+    print('1- Mostrar alumnos.')
+    print('2- Mostar alumno por curso.')
+    print('3- Crear alumno.')
+    print('4- Editar alumno.')
+    print('5- Eliminar instrumento.')
+    print('6- Salir.')
+
+
+def mostrar_alumnos(alumnos):
+    for a in alumnos:
+        print(f"Nombre completo: {a["nombre"].capitalize()} {a["apellido"].capitalize()} || Curso: {a["año"]} || Turno: {a["division"]}")
+
+

@@ -2,7 +2,7 @@ import csv
 import os
 
 import utils
-
+ENCABEZADOS=['nombre', 'apellido', 'ID']
 #MODELO DE DATOS: SISTEMA DE ALUMNOS --> nombre=string apellido=string ID=string
 # JERARQUIA: 
 # 1er año: 
@@ -22,8 +22,8 @@ import utils
 #       alumnos_3tt
 
 
-DIRECTORIO="alumnos"
-ENCABEZADOS=['nombre', 'apellido', 'ID']
+# DIRECTORIO="alumnos"
+# ENCABEZADOS=['nombre', 'apellido', 'ID']
 
 
 #FUNCION RECURSIVA--> CARGAR RUTAS EN LA LISTA
@@ -32,33 +32,22 @@ def listar_archivos(directorio, lista):
     for elemento in os.listdir(directorio):
         ruta = os.path.join(directorio, elemento)
         if os.path.isdir(ruta):
-            print(f"Directorio padre: {ruta}")
-            print("--------------------------------------------")
             listar_archivos(ruta, lista)
         else:
             lista.append(ruta)
             print(ruta)
 
 
-lista_rutas=[]#LISTA DE RUTA DE LOS ARCHIVOS
-listar_archivos(DIRECTORIO, lista_rutas)
 
 
 
-print(lista_rutas)#LISTA CON LAS RUTAS
-
-
-
-
-
-def cargar_datos(lista_rutas):#CARGAR TODOS LOS ALUMNOS DE TODOS LOS CSV EN UNA LISTA
+def leer_datos_csv(lista_rutas):#CARGAR TODOS LOS ALUMNOS DE TODOS LOS CSV EN UNA LISTA
     lista = []
     for ruta in lista_rutas:
         if not ruta.endswith('.csv'):
             continue
-        print(f"\nLeyendo: {ruta}")
         try: 
-            with open(ruta, 'r', encoding='utf-8') as archivo:
+            with open(ruta, 'r', newline="", encoding='utf-8') as archivo:
                 lector = csv.DictReader(archivo)  
                 
                 for fila in lector:
@@ -92,10 +81,6 @@ def cargar_datos(lista_rutas):#CARGAR TODOS LOS ALUMNOS DE TODOS LOS CSV EN UNA 
             print(f'Error inesperado con {ruta}: {e}')
     
     return lista
-cargar_datos(lista_rutas)
-
-
-alumnos=cargar_datos(lista_rutas)#LISTADO DE TODOS LOS ALUMNOS
 
 
 def mostrar_items_ruta(lista_alumnos, ruta_csv):#MOSTRAR TODOS LOS ALUMNOS DE UN RUTA
@@ -106,239 +91,149 @@ def mostrar_items_ruta(lista_alumnos, ruta_csv):#MOSTRAR TODOS LOS ALUMNOS DE UN
             lista.append(alumno)
             print("-",alumno["nombre"].capitalize(), alumno["apellido"].capitalize())
 
-#mostrar_items_ruta(alumnos,'alumnos/3er_año/turno_tarde/alumnos_3tt.csv')
 
 
-def filtrar_por_curso(lista_alumnos, curso): #MOSTAR ALUMNOS DE UN CURSO
+def filtrar_por_curso(lista_alumnos): #MOSTAR ALUMNOS DE UN CURSO
+    while True:
+        curso= input("Ingrese el curso por el que desea filtrar (ej: 1er_año): ").strip().lower()
+        if curso not in ["1er_año", "2do_año","3er_año"]:
+            print("Error: Ingrese campo valido: 1er_año, 2do_año, 3er_año")
+            continue
+        break
     lista=[]
     print(f"Alumnos de {curso}")
     for alumno in lista_alumnos:
         if alumno['año']==curso:
             lista.append(alumno)
-            print("-",alumno["nombre"].capitalize(), alumno["apellido"].capitalize())
-# filtrar_por_curso(alumnos,"3er_año")
+    if not lista:  # Si la lista está vacía
+        print(f"No se encontraron alumnos en {curso}")
+    return lista
 
 
 
 def actualizar_csv(ruta, alumnos): #ACTUALIZAR CSV
-    with open(ruta, "w",newline="") as archivo:
+    with open(ruta, "w",newline="", encoding='utf-8') as archivo:
         escritor=csv.DictWriter(archivo, fieldnames=ENCABEZADOS)
         escritor.writeheader()
         escritor.writerows(alumnos)
 
-def modificar_alumno(alumnos):#ACTUALIZAR CAMPO DEL CSV 
-    id=utils.pedir_id(alumnos)
+
+def modificar_alumno(alumnos):
+    id = utils.pedir_id(alumnos)
+    for alumno in alumnos:
+        if alumno["ID"] == id:
+            alumno_encontrado = alumno
+            break
+
     while True:
-        valor_a_modificar= input("Ingrese el nombre del campo a modificar: ").strip().lower()
-        if valor_a_modificar not in ["nombre", "apellido"]:
-            print("Error: Ingrese campo valido: nombre o apellido")
+        campo = input("Ingrese el campo a modificar (nombre o apellido): ").strip().lower()
+        if campo not in ["nombre", "apellido"]:
+            print("Error: campo inválido. Solo puede modificar 'nombre' o 'apellido'.")
             continue
         break
+
     while True:
-        nuevo_valor=input("Ingrese el nuevo valor:  ").strip().lower()
+        nuevo_valor = input(f"Ingrese el nuevo valor para {campo}: ").strip().lower()
         if not utils.validar_texto(nuevo_valor):
             continue
         break
-    for alumno in alumnos:
-        if alumno["ID"] == id:
-            alumno[valor_a_modificar] = nuevo_valor
-            ruta_csv = alumno["ruta_archivo"]
-            break
-    alumnos_del_csv = []  
-    for a in alumnos:  # BUSCAR MODIFICAR SOLO LOS ARCHIVOS DE SA RUTA
-        if a["ruta_archivo"] == ruta_csv:  
-            alumno_csv = utils.normalizar_diccionario(a["nombre"],a["apellido"],a["ID"])
-            alumnos_del_csv.append(alumno_csv) 
-    actualizar_csv(ruta_csv, alumnos_del_csv)#ACTUALIZAR CSV
-    print(f"Alumno ID={id} modificado")
+
+    alumno_encontrado[campo] = nuevo_valor
+    ruta_csv = alumno_encontrado["ruta_archivo"]
+    modificar_datos_ruta(alumnos, ruta_csv)
+    print(f"Alumno ID={id} modificado con éxito.")
 
 
 def eliminar_alumno(alumnos):
-    id=utils.pedir_id(alumnos)
+    id = utils.pedir_id(alumnos)
+    alumno_encontrado = None
+
     for alumno in alumnos:
         if alumno["ID"] == id:
-            alumnos.remove(alumno)
-            ruta_csv = alumno["ruta_archivo"]
+            alumno_encontrado = alumno
             break
-    alumnos_del_csv = []  
-    for a in alumnos:  # BUSCAR MODIFICAR SOLO LOS ARCHIVOS DE SA RUTA
-        if a["ruta_archivo"] == ruta_csv:  
-            alumno_csv = utils.normalizar_diccionario(a["nombre"],a["apellido"],a["ID"])
-            alumnos_del_csv.append(alumno_csv) 
-        actualizar_csv(ruta_csv, alumnos_del_csv)
+
+    if not alumno_encontrado:
+        print(f"No se encontró alumno con ID={id}")
+        return
+
+    alumnos.remove(alumno_encontrado)
+    ruta_csv = alumno_encontrado["ruta_archivo"]
+    modificar_datos_ruta(alumnos, ruta_csv)
+    print(f"Alumno ID={id} eliminado con éxito!!!")
     print(f"Alumno ID={id} eliminado con exito!!!")
 
-eliminar_alumno(alumnos)
 
 
+def modificar_datos_ruta(alumnos, ruta_alumno):
+    alumnos_del_csv = []
+    for a in alumnos:
+        if a["ruta_archivo"] == ruta_alumno:
+            alumno_csv = utils.normalizar_diccionario(a["nombre"], a["apellido"], a["ID"])
+            alumnos_del_csv.append(alumno_csv)
+    actualizar_csv(ruta_alumno, alumnos_del_csv)
 
-
-def cargar_datos_csv(alumnos):
+def añadir_alumno_csv(alumnos):
     while True:
         nombre= input("Ingrese el nombre de alumno: ").strip().lower()
         if not utils.validar_texto(nombre):
             continue
         break
     while True:
-        apellido=input("Ingrese el apelido de alumno: ").strip().lower()
+        apellido=input("Ingrese el apellido de alumno: ").strip().lower()
         if not utils.validar_texto(apellido):
             continue
         break
-    id=utils.pedir_id(alumnos)
-    if "1M" in id:
-        ruta_archivo="alumnos/1er_año/turno_mañana/alumnos_1tm.csv"
-    elif "1T" in id:
-        ruta_archivo="alumnos/1er_año/turno_tarde/alumnos_1tt.csv"
-    elif "2M" in id:
-        ruta_archivo="alumnos/2do_año/turno_mañana/alumnos_2tm.csv"
-    elif "2T" in id:
-        ruta_archivo="alumnos/2do_año/turno_tarde/alumnos_2tt.csv"
-    elif "3M" in id:
-        ruta_archivo="alumnos/3er_año/turno_tarde/alumnos_3tt.csv"
-    elif "3T" in id:
-        ruta_archivo="alumnos/3er_año/turno_mañana/alumnos_3tm.csv"
+    
+    while True:
+        curso = input("Ingrese el número del curso (1, 2 o 3): ").strip()
+        if curso not in ["1", "2", "3"]:
+            print("Error: Ingrese una opción válida (1, 2 o 3)")
+            continue
+        break
+    
+    while True:
+        turno = input("Ingrese el turno (mañana/tarde): ").strip().lower()
+        if turno not in ["mañana", "tarde"]:
+            print("Error: Ingrese mañana o tarde")
+            continue
+        break
+    while True:
+        id = utils.pedir_id(alumnos, "crear")
+        break
+    if curso == "1" and turno == "mañana":
+        ruta_archivo = "alumnos/1er_año/turno_mañana/alumnos_1tm.csv"
+        año = "1er_año"
+        division = "turno_mañana"
+    elif curso == "1" and turno == "tarde":
+        ruta_archivo = "alumnos/1er_año/turno_tarde/alumnos_1tt.csv"
+        año = "1er_año"
+        division = "turno_tarde"
+    elif curso == "2" and turno == "mañana":
+        ruta_archivo = "alumnos/2do_año/turno_mañana/alumnos_2tm.csv"
+        año = "2do_año"
+        division = "turno_mañana"
+    elif curso == "2" and turno == "tarde":
+        ruta_archivo = "alumnos/2do_año/turno_tarde/alumnos_2tt.csv"
+        año = "2do_año"
+        division = "turno_tarde"
+    elif curso == "3" and turno == "mañana":
+        ruta_archivo = "alumnos/3er_año/turno_mañana/alumnos_3tm.csv"
+        año = "3er_año"
+        division = "turno_mañana"
+    elif curso == "3" and turno == "tarde":
+        ruta_archivo = "alumnos/3er_año/turno_tarde/alumnos_3tt.csv"
+        año = "3er_año"
+        division = "turno_tarde"
+    
+    nuevo_alumno=utils.crear_alumno(nombre, apellido,id,ruta_archivo,año,division) 
+   
     alumnos.append(nuevo_alumno)
-    nuevo_alumno=utils.normalizar_diccionario(nombre, apellido, id)
-    for alumno in alumnos:
-        if alumno["ID"] == id:
-            alumnos.remove(alumno)
-            ruta_csv = alumno["ruta_archivo"]
-            break
     alumnos_del_csv = []  
     for a in alumnos:  
-        if a["ruta_archivo"] == ruta_csv:  
-            alumno_csv = utils.normalizar_diccionario(a["nombre"],a["apellido"],a["ID"])
-            alumnos_del_csv.append(alumno_csv) 
-        actualizar_csv(ruta_csv, alumnos_del_csv)
-    print(f"Alumno ID={id} eliminado con exito!!!")
-
-
-rutas = [{"año": "1ro",
-         "turno":"tarde"
-          "ruta":"" }
-
-
-
-
-
-
-
-
-# def inicializar_archivo(ruta):
-#     if not os.path.exists(ruta):
-#         with open(ruta, 'w', newline='', encoding='utf-8') as archivo:
-#             escritor = csv.DictWriter(archivo, fieldnames=ENCABEZADOS)
-#             escritor.writeheader()
-
-# def actualizar_datos(ruta, lista):
-#     with open(ruta, 'w', newline='', encoding='utf-8') as archivo:
-#         escritor = csv.DictWriter(archivo, fieldnames=ENCABEZADOS)
-#         escritor.writeheader()
-#         escritor.writerows(lista)
-
-# def mostrar_menu():
-#     print('--- MENU PRINCIPAL ---')
-#     print('1- Mostrar inventario.')
-#     print('2- Agregar instrumentos.')
-#     print('3- Editar unidades.')
-#     print('4- Eliminar instrumento.')
-#     print('5- Mostrar sin stock.')
-#     print('6- Vender / Comprar')
-#     print('7- Consultar stock.')
-#     print('8- Salir.')
+        if a["ruta_archivo"] == ruta_archivo:  
+            alumno_csv = utils.normalizar_diccionario(a["nombre"], a["apellido"], a["ID"])
+            alumnos_del_csv.append(alumno_csv)
     
-# def mostrar_inventario(lista):
-#     if not lista:
-#         print('No hay instrumentos disponibles.')
-#     else:
-#         for elem in lista:
-#             print(f'- {elem['instrumento'].capitalize()} - {elem['unidades']} unidades.')
-
-# def agregar_instrumentos(lista):
-#     try:
-#         cant_inst = int(input('Cuantos instrumentos quiere agregar? '))
-#         for i in range(cant_inst):
-#             nombre = input(f'Nombre del instrumento {i+1}: ').lower().strip()
-#             while True:
-#                 cant = input('Cantidad de unidades: ')
-#                 if cant.isdigit():
-#                     cant = int(cant)
-#                     break
-#             lista.append({'instrumento':nombre, 'unidades':cant})
-#         actualizar_datos(lista)
-#         return lista
-#     except ValueError:
-#         print('Debés ingresar un número entero.')
-
-# def editar_instrumento(inventario):
-#     instrumento = input('Ingrese el nombre del instrumento que quiere editar: ').lower().strip()
-#     for elem in inventario:
-#         if(instrumento == elem['instrumento']):
-#             while True:
-#                 try:
-#                     unid = int(input('Ingrese las unidades del instrumento: '))
-#                     elem['unidades'] = unid
-#                     actualizar_datos(inventario)
-#                     return inventario
-#                 except ValueError:
-#                     print('Ingrese un número entero.')
-
-# def eliminar_instrumento(inventario):
-#     lista_nva = []
-#     instrumento = input('Ingrese el nombre del instrumento que quiere eliminar: ').lower().strip()
-#     for elem in inventario:
-#         if(instrumento == elem['instrumento']):
-#             continue
-#         lista_nva.append(elem)
-#     actualizar_datos(lista_nva)
-#     return lista_nva
-
-# def mostrar_sin_stock(inventario):
-#     for elem in inventario:
-#         if(elem['unidades'] == 0):
-#             print(f'- {elem['instrumento']}')
-
-# def vender_comprar(inventario):
-#     inst = input('Que instrumento quiere vender o comprar? ').lower().strip()
-#     for elem in inventario:
-#         if(inst == elem['instrumento']):
-#             opcion_vc = input('Querés vender o comprar? (v/c): ').lower().strip()
-#             match opcion_vc:
-#                 case 'v':
-#                     if(elem['unidades'] == 0):
-#                         print('No hay unidades disponibles')
-#                     else:
-#                         try:
-#                             cant = int(input('Cuantas unidades va a vender? '))
-#                             if(elem['unidades'] < cant):
-#                                 print('No hay unidades disponibles.')
-#                             else:
-#                                 elem['unidades'] -= cant
-#                                 print('Unidades vendidas.')
-#                                 actualizar_datos(inventario)
-#                                 return inventario
-#                         except ValueError:
-#                             print('Las unidades son números enteros.')
-#                 case 'c':
-#                     try:
-#                         cant = int(input('Cuantas unidades va a comprar? '))
-#                         elem['unidades'] += cant
-#                         print('Unidades agregadas.')
-#                         actualizar_datos(inventario)
-#                         return inventario
-#                     except ValueError:
-#                         print('Las unidades son números enteros.')
-#                 case _:
-#                     print('Opcion incorrecta.')
-#                     return inventario
-
-# def consultar_stock(inventario):
-#     if not inventario:
-#         print('No hay instrumentos disponibles.')
-#     else:
-#         instrumento = input('Ingrese el nombre del instrumento que quiere consultar: ').lower().strip()
-#         for elem in inventario:
-#             if instrumento == elem['instrumento']:
-#                 print(f'{elem['unidades']} unidades disponibles.')
-#             else:
-#                 print('No existe ese instrumento.')
+    actualizar_csv(ruta_archivo, alumnos_del_csv)
+    print(f"Alumno agregado por exito!!!")
