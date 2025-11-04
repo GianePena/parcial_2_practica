@@ -10,6 +10,7 @@ def validar_texto(texto):#VALIDAR TEXTO
         return False
 
 def pedir_id(alumnos, accion=None):
+    """Pedir ID y verficar si existe o no entre los ID de los alumnos"""
     while True:
         id = input("Ingrese el ID del alumno: ").strip()
         if len(id) == 0:
@@ -31,6 +32,7 @@ def pedir_id(alumnos, accion=None):
     return id
 
 def buscar_por_ID(alumnos, ID):#BUSCAR ALUMNO POR ID
+    """Verifica la existencia de alumnos con el ID"""
     existe=False
     for a in alumnos:
         if a["ID"]==ID:
@@ -43,6 +45,9 @@ def buscar_por_ID(alumnos, ID):#BUSCAR ALUMNO POR ID
 
 
 def normalizar_diccionario(nombre, apellido, id):
+    """
+    Retorna un diccionario con un formato igual al csv 
+    """
     alumno_csv = {                 
         "nombre": nombre,
         "apellido": apellido,
@@ -51,6 +56,9 @@ def normalizar_diccionario(nombre, apellido, id):
     return alumno_csv
 
 def crear_alumno(nombre, apellido, id, ruta_archivo, año, division):
+    """
+    Crea un diccionario para cada alumno necesario para trabajar con las diferentes operaciones de CRUD
+    """
     nuevo_alumno = {
         "nombre": nombre,
         "apellido": apellido,
@@ -60,6 +68,7 @@ def crear_alumno(nombre, apellido, id, ruta_archivo, año, division):
         "division": division
     }
     return nuevo_alumno
+
 def mostrar_menu():
     print('--- MENU PRINCIPAL ---')
     print('1- Mostrar alumnos.')

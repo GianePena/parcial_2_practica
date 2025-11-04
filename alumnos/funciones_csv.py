@@ -29,6 +29,9 @@ ENCABEZADOS=['nombre', 'apellido', 'ID']
 #FUNCION RECURSIVA--> CARGAR RUTAS EN LA LISTA
 
 def listar_archivos(directorio, lista):
+    """
+        cargar lista de rutas de csv de alumnos
+    """
     for elemento in os.listdir(directorio):
         ruta = os.path.join(directorio, elemento)
         if os.path.isdir(ruta):
@@ -42,6 +45,9 @@ def listar_archivos(directorio, lista):
 
 
 def leer_datos_csv(lista_rutas):#CARGAR TODOS LOS ALUMNOS DE TODOS LOS CSV EN UNA LISTA
+    """
+    cargar todos los alumnos de todos los csv en una sola lista de alumnos
+    """
     lista = []
     for ruta in lista_rutas:
         if not ruta.endswith('.csv'):
@@ -94,6 +100,10 @@ def mostrar_items_ruta(lista_alumnos, ruta_csv):#MOSTRAR TODOS LOS ALUMNOS DE UN
 
 
 def filtrar_por_curso(lista_alumnos): #MOSTAR ALUMNOS DE UN CURSO
+    """
+    filtar lista total de alumnos por el curso
+    retorna una lista de alumnos que forman parte del mismo curso 
+    """
     while True:
         curso= input("Ingrese el curso por el que desea filtrar (ej: 1er_año): ").strip().lower()
         if curso not in ["1er_año", "2do_año","3er_año"]:
@@ -112,6 +122,9 @@ def filtrar_por_curso(lista_alumnos): #MOSTAR ALUMNOS DE UN CURSO
 
 
 def actualizar_csv(ruta, alumnos): #ACTUALIZAR CSV
+    """
+    reescribe el csv con datos modificador(eliminacion o modificacion)
+    """
     with open(ruta, "w",newline="", encoding='utf-8') as archivo:
         escritor=csv.DictWriter(archivo, fieldnames=ENCABEZADOS)
         escritor.writeheader()
