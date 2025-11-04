@@ -144,8 +144,8 @@ El sistema incluye manejo de excepciones para:
 - Filas incompletas en CSV
 
 ## 👥 Autor
-
-Trabajo integrador desarrollado como proyecto académico.
+Peña Gianella 
+Fontagnol Agustina
 
 ---
 
