@@ -75,7 +75,7 @@ def mostrar_menu():
     print('2- Mostar alumno por curso.')
     print('3- Crear alumno.')
     print('4- Editar alumno.')
-    print('5- Eliminar instrumento.')
+    print('5- Eliminar alumno.')
     print('6- Salir.')
 
 

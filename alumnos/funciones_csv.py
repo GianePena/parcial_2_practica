@@ -2,31 +2,28 @@ import csv
 import os
 
 import utils
+
+"""
+MODELO DE DATOS: SISTEMA DE ALUMNOS --> nombre=string apellido=string ID=string
+JERARQUIA: 
+1er año: 
+  turno_mañana
+      alumnos_1tm
+  turno_tarde
+      alumnos_1tt
+2er año 
+  turno_mañana
+      alumnos_2tm
+  turno_tarde
+      alumnos_2tt
+3er año
+  turno_mañana
+      alumnos_3tm
+  turno_tarde
+      alumnos_3tt
+"""
+
 ENCABEZADOS=['nombre', 'apellido', 'ID']
-#MODELO DE DATOS: SISTEMA DE ALUMNOS --> nombre=string apellido=string ID=string
-# JERARQUIA: 
-# 1er año: 
-#   turno_mañana
-#       alumnos_1tm
-#   turno_tarde
-#       alumnos_1tt
-# 2er año 
-#   turno_mañana
-#       alumnos_2tm
-#   turno_tarde
-#       alumnos_2tt
-# 3er año
-#   turno_mañana
-#       alumnos_3tm
-#   turno_tarde
-#       alumnos_3tt
-
-
-# DIRECTORIO="alumnos"
-# ENCABEZADOS=['nombre', 'apellido', 'ID']
-
-
-#FUNCION RECURSIVA--> CARGAR RUTAS EN LA LISTA
 
 def listar_archivos(directorio, lista):
     """
@@ -38,10 +35,6 @@ def listar_archivos(directorio, lista):
             listar_archivos(ruta, lista)
         else:
             lista.append(ruta)
-            print(ruta)
-
-
-
 
 
 def leer_datos_csv(lista_rutas):#CARGAR TODOS LOS ALUMNOS DE TODOS LOS CSV EN UNA LISTA
@@ -89,15 +82,6 @@ def leer_datos_csv(lista_rutas):#CARGAR TODOS LOS ALUMNOS DE TODOS LOS CSV EN UN
     return lista
 
 
-def mostrar_items_ruta(lista_alumnos, ruta_csv):#MOSTRAR TODOS LOS ALUMNOS DE UN RUTA
-    lista=[]
-    print(f"Alumnos en {ruta_csv}:")
-    for alumno in lista_alumnos:
-        if alumno['ruta_archivo']==ruta_csv:
-            lista.append(alumno)
-            print("-",alumno["nombre"].capitalize(), alumno["apellido"].capitalize())
-
-
 
 def filtrar_por_curso(lista_alumnos): #MOSTAR ALUMNOS DE UN CURSO
     """
@@ -123,7 +107,7 @@ def filtrar_por_curso(lista_alumnos): #MOSTAR ALUMNOS DE UN CURSO
 
 def actualizar_csv(ruta, alumnos): #ACTUALIZAR CSV
     """
-    reescribe el csv con datos modificador(eliminacion o modificacion)
+    rescribe el csv con datos modificador(eliminacion o modificacion)
     """
     with open(ruta, "w",newline="", encoding='utf-8') as archivo:
         escritor=csv.DictWriter(archivo, fieldnames=ENCABEZADOS)
@@ -160,21 +144,17 @@ def modificar_alumno(alumnos):
 def eliminar_alumno(alumnos):
     id = utils.pedir_id(alumnos)
     alumno_encontrado = None
-
     for alumno in alumnos:
         if alumno["ID"] == id:
             alumno_encontrado = alumno
             break
-
     if not alumno_encontrado:
         print(f"No se encontró alumno con ID={id}")
         return
-
     alumnos.remove(alumno_encontrado)
     ruta_csv = alumno_encontrado["ruta_archivo"]
     modificar_datos_ruta(alumnos, ruta_csv)
     print(f"Alumno ID={id} eliminado con éxito!!!")
-    print(f"Alumno ID={id} eliminado con exito!!!")
 
 
 
@@ -240,7 +220,6 @@ def añadir_alumno_csv(alumnos):
         division = "turno_tarde"
     
     nuevo_alumno=utils.crear_alumno(nombre, apellido,id,ruta_archivo,año,division) 
-   
     alumnos.append(nuevo_alumno)
     alumnos_del_csv = []  
     for a in alumnos:  
