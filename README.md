@@ -39,7 +39,7 @@ Santiago,Vargas,2023-2M-002
 Cada alumno contiene:
 - **nombre**: String (texto)
 - **apellido**: String (texto)
-- **ID**: String único (identificador)
+- **ID**: String(identificador)
 - **año**: Extraído automáticamente de la ruta del archivo
 - **división**: Turno (mañana/tarde)
 - **ruta_archivo**: Ubicación del CSV correspondiente
@@ -144,9 +144,13 @@ El sistema incluye manejo de excepciones para:
 - Filas incompletas en CSV
 
 ## 👥 Autor
+Peña Gianella 
 
-Trabajo integrador desarrollado como proyecto académico.
+Fontagnol Agustina
 
+## Video explicativo:
+
+https://drive.google.com/drive/folders/1ZjBvYY5ehr2HJTJajBLCrs-4QTCrOUJR?usp=sharing
 ---
 
 **Versión**: 1.0  
