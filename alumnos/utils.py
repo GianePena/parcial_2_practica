@@ -9,6 +9,21 @@ def validar_texto(texto):#VALIDAR TEXTO
         print("Error: ", e)
         return False
 
+
+def buscar_por_ID(alumnos, ID):#BUSCAR ALUMNO POR ID
+    """Verifica la existencia de alumnos con el ID"""
+    existe=False
+    for a in alumnos:
+        if a["ID"]==ID:
+            existe=True
+            break
+    if existe:
+        return True
+    elif not existe:
+        return False
+
+
+
 def pedir_id(alumnos, accion=None):
     """Pedir ID y verficar si existe o no entre los ID de los alumnos"""
     while True:
@@ -31,17 +46,6 @@ def pedir_id(alumnos, accion=None):
     
     return id
 
-def buscar_por_ID(alumnos, ID):#BUSCAR ALUMNO POR ID
-    """Verifica la existencia de alumnos con el ID"""
-    existe=False
-    for a in alumnos:
-        if a["ID"]==ID:
-            existe=True
-            break
-    if existe:
-        return True
-    elif not existe:
-        return False
 
 
 def normalizar_diccionario(nombre, apellido, id):
@@ -76,11 +80,13 @@ def mostrar_menu():
     print('3- Crear alumno.')
     print('4- Editar alumno.')
     print('5- Eliminar alumno.')
-    print('6- Salir.')
+    print('6- Odenar alumnos.')
+    print('7- Estadisticas alumnos.')
+    print('8- Salir.')
 
 
 def mostrar_alumnos(alumnos):
     for a in alumnos:
-        print(f"Nombre completo: {a["nombre"].capitalize()} {a["apellido"].capitalize()} || Curso: {a["año"]} || Turno: {a["division"]}")
+        print(f"Nombre completo: {a["nombre"].capitalize()} {a["apellido"].capitalize()} || Curso: {a["año"]} || Turno: {a["turno"]}")
 
 

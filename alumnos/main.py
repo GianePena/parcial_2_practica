@@ -18,7 +18,8 @@ def programa_principal():
                     utils.mostrar_alumnos(alumnos)
                 case 2:#filtrar alumno por curso
                     print("FILTRAR ALUMNOS POR CURSO")
-                    alumnos_filtrados = csv.filtrar_por_curso(alumnos)
+                    curso=csv.pedir_curso()
+                    alumnos_filtrados = csv.filtrar_alumnos(alumnos,curso, "año")
                     if alumnos_filtrados: 
                         print(f"\n--- Mostrando {len(alumnos_filtrados)} alumno(s) ---")
                         utils.mostrar_alumnos(alumnos_filtrados)
@@ -32,7 +33,23 @@ def programa_principal():
                     pass
                 case 5:#eliminar alumno
                     csv.eliminar_alumno(alumnos)
-                case 6: 
+                case 6:#Ordemaniento de A-Z y mañana o tarde
+                    print("LISTA ORDENADA DE (A-Z)")
+                    alumnos_ordenada=csv.ordenar_por_nombre(alumnos)
+                    for a in alumnos_ordenada:
+                        print("-",a.capitalize())
+                    pass
+                    print("ORDENADOS POR CURSO: ")
+                    primero, segundo, tercero=csv.ordenar_por_curso(alumnos)
+                    print(f"ALUMNOS DE 1er AÑO")
+                    utils.mostrar_alumnos(primero)
+                    print(f"ALUMNOS DE 2do AÑO")
+                    utils.mostrar_alumnos(segundo)
+                    print(f"ALUMNOS DE 3er AÑO")
+                    utils.mostrar_alumnos(tercero)
+                case 7:#cantidad de alumnos total, por curso , por turno, promedio por turno
+                    csv.mostrar_estadisticas(alumnos)
+                case 8: 
                     print('Hasta luego.')
                     break
                 case _:

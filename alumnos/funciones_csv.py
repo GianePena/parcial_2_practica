@@ -3,27 +3,9 @@ import os
 
 import utils
 
-"""
-MODELO DE DATOS: SISTEMA DE ALUMNOS --> nombre=string apellido=string ID=string
-JERARQUIA: 
-1er año: 
-  turno_mañana
-      alumnos_1tm
-  turno_tarde
-      alumnos_1tt
-2er año 
-  turno_mañana
-      alumnos_2tm
-  turno_tarde
-      alumnos_2tt
-3er año
-  turno_mañana
-      alumnos_3tm
-  turno_tarde
-      alumnos_3tt
-"""
 
 ENCABEZADOS=['nombre', 'apellido', 'ID']
+
 
 def listar_archivos(directorio, lista):
     """
@@ -68,7 +50,7 @@ def leer_datos_csv(lista_rutas):#CARGAR TODOS LOS ALUMNOS DE TODOS LOS CSV EN UN
                     if len(partes_ruta) >= 2:
                         alumno['año'] = partes_ruta[1] if len(partes_ruta) > 1 else ''
                         if len(partes_ruta) >= 3:
-                            alumno['division'] = partes_ruta[2] if len(partes_ruta) > 2 else ''
+                            alumno['turno'] = partes_ruta[2] if len(partes_ruta) > 2 else ''
                     
                     lista.append(alumno)
                     
@@ -82,27 +64,30 @@ def leer_datos_csv(lista_rutas):#CARGAR TODOS LOS ALUMNOS DE TODOS LOS CSV EN UN
     return lista
 
 
-
-def filtrar_por_curso(lista_alumnos): #MOSTAR ALUMNOS DE UN CURSO
+#CAMBIADO ------------
+def filtrar_alumnos(lista_alumnos, dato_ingresado, campo_a_modif): #MOSTAR ALUMNOS DE UN CURSO
     """
+    dato ingresado: dato que correcponde al campo por el se quiere filtar (dato=mañana, 1er_año)
+    campo a modificar: turno, año
     filtar lista total de alumnos por el curso
     retorna una lista de alumnos que forman parte del mismo curso 
     """
+
+    lista=[]
+    for alumno in lista_alumnos:
+        if alumno[campo_a_modif]==dato_ingresado:
+            lista.append(alumno)
+    if not lista:  # Si la lista está vacía
+        print(f"No se encontraron alumnos en {dato_ingresado}")
+    return lista
+
+def pedir_curso():
     while True:
         curso= input("Ingrese el curso por el que desea filtrar (ej: 1er_año): ").strip().lower()
         if curso not in ["1er_año", "2do_año","3er_año"]:
             print("Error: Ingrese campo valido: 1er_año, 2do_año, 3er_año")
             continue
-        break
-    lista=[]
-    print(f"Alumnos de {curso}")
-    for alumno in lista_alumnos:
-        if alumno['año']==curso:
-            lista.append(alumno)
-    if not lista:  # Si la lista está vacía
-        print(f"No se encontraron alumnos en {curso}")
-    return lista
-
+        return curso
 
 
 def actualizar_csv(ruta, alumnos): #ACTUALIZAR CSV
@@ -197,29 +182,29 @@ def añadir_alumno_csv(alumnos):
     if curso == "1" and turno == "mañana":
         ruta_archivo = "alumnos/1er_año/turno_mañana/alumnos_1tm.csv"
         año = "1er_año"
-        division = "turno_mañana"
+        turno = "turno_mañana"
     elif curso == "1" and turno == "tarde":
         ruta_archivo = "alumnos/1er_año/turno_tarde/alumnos_1tt.csv"
         año = "1er_año"
-        division = "turno_tarde"
+        turno = "turno_tarde"
     elif curso == "2" and turno == "mañana":
         ruta_archivo = "alumnos/2do_año/turno_mañana/alumnos_2tm.csv"
         año = "2do_año"
-        division = "turno_mañana"
+        turno = "turno_mañana"
     elif curso == "2" and turno == "tarde":
         ruta_archivo = "alumnos/2do_año/turno_tarde/alumnos_2tt.csv"
         año = "2do_año"
-        division = "turno_tarde"
+        turno = "turno_tarde"
     elif curso == "3" and turno == "mañana":
         ruta_archivo = "alumnos/3er_año/turno_mañana/alumnos_3tm.csv"
         año = "3er_año"
-        division = "turno_mañana"
+        turno = "turno_mañana"
     elif curso == "3" and turno == "tarde":
         ruta_archivo = "alumnos/3er_año/turno_tarde/alumnos_3tt.csv"
         año = "3er_año"
-        division = "turno_tarde"
+        turno = "turno_tarde"
     
-    nuevo_alumno=utils.crear_alumno(nombre, apellido,id,ruta_archivo,año,division) 
+    nuevo_alumno=utils.crear_alumno(nombre, apellido,id,ruta_archivo,año,turno) 
     alumnos.append(nuevo_alumno)
     alumnos_del_csv = []  
     for a in alumnos:  
@@ -229,3 +214,56 @@ def añadir_alumno_csv(alumnos):
     
     actualizar_csv(ruta_archivo, alumnos_del_csv)
     print(f"Alumno agregado por exito!!!")
+
+
+
+def ordenar_por_nombre(alumnos):
+    lista_nombre=[]
+    for a in alumnos:
+        lista_nombre.append(a["nombre"])
+    lista_nombre.sort()
+    return lista_nombre
+
+def ordenar_por_curso(alumnos):
+    alumnos_1er_año=[]
+    alumnos_2do_año=[]
+    alumnos_3er_año=[]
+    for a in alumnos:
+        if a["año"]=="1er_año":
+            alumnos_1er_año.append(a)
+        elif a["año"]=="2do_año":
+            alumnos_2do_año.append(a)
+        elif a["año"]=="3er_año":
+            alumnos_3er_año.append(a)
+    return alumnos_1er_año, alumnos_2do_año, alumnos_3er_año
+
+
+
+def mostrar_estadisticas(alumnos):
+    
+    alumnos_mañana=filtrar_alumnos(alumnos,"turno_mañana","turno")
+    print(f"{len(alumnos_mañana)} ALUMNOS EN TURNO MAÑANA")
+    utils.mostrar_alumnos(alumnos_mañana)
+    
+    alumnos_tarde=filtrar_alumnos(alumnos,"turno_tarde","turno")
+    print(f"{len(alumnos_tarde)} ALUMNOS EN TURNO TARDE")
+    utils.mostrar_alumnos(alumnos_tarde)
+
+    print(f"TOTAL DE ALUMNOS CARGADOS: {len(alumnos)}")
+    promedio_tarde, promedio_mañana=promedio_por_turno(alumnos)
+    print (f"PROMEDIO DE ALUMNOS EN EL TURNO TARDE: % {promedio_tarde*100:.2f} ")
+    print (f"PROMEDIO DE ALUMNOS EN EL TURNO MAÑANA: % {promedio_mañana*100:.2f} ")
+    
+    
+def promedio_por_turno(alumnos):
+    cantidad_tarde=0
+    cantidad_mañana=0
+    for a in alumnos:
+        if a["turno"]=="turno_mañana":
+            cantidad_mañana+=1
+        elif a["turno"]=="turno_tarde":
+            cantidad_tarde+=1
+    promedio_tarde=cantidad_tarde/len(alumnos)
+    promedio_mañana=cantidad_mañana/len(alumnos)
+    return promedio_tarde, promedio_mañana
+
