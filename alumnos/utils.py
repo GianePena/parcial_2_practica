@@ -87,6 +87,6 @@ def mostrar_menu():
 
 def mostrar_alumnos(alumnos):
     for a in alumnos:
-        print(f"Nombre completo: {a["nombre"].capitalize()} {a["apellido"].capitalize()} || Curso: {a["año"]} || Turno: {a["turno"]}")
+        print(f"Nombre completo: {a['nombre'].capitalize()} {a['apellido'].capitalize()} || Curso: {a['año']} || Turno: {a['turno']}")
 
 

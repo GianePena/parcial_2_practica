@@ -63,8 +63,6 @@ def leer_datos_csv(lista_rutas):#CARGAR TODOS LOS ALUMNOS DE TODOS LOS CSV EN UN
     
     return lista
 
-
-#CAMBIADO ------------
 def filtrar_alumnos(lista_alumnos, dato_ingresado, campo_a_modif): #MOSTAR ALUMNOS DE UN CURSO
     """
     dato ingresado: dato que correcponde al campo por el se quiere filtar (dato=mañana, 1er_año)
@@ -218,10 +216,8 @@ def añadir_alumno_csv(alumnos):
 
 
 def ordenar_por_nombre(alumnos):
-    lista_nombre=[]
-    for a in alumnos:
-        lista_nombre.append(a["nombre"])
-    lista_nombre.sort()
+    lista_nombre = alumnos.copy() 
+    lista_nombre.sort(key=lambda x: x["nombre"])
     return lista_nombre
 
 def ordenar_por_curso(alumnos):
@@ -251,10 +247,10 @@ def mostrar_estadisticas(alumnos):
 
     print(f"TOTAL DE ALUMNOS CARGADOS: {len(alumnos)}")
     promedio_tarde, promedio_mañana=promedio_por_turno(alumnos)
-    print (f"PROMEDIO DE ALUMNOS EN EL TURNO TARDE: % {promedio_tarde*100:.2f} ")
-    print (f"PROMEDIO DE ALUMNOS EN EL TURNO MAÑANA: % {promedio_mañana*100:.2f} ")
+    print (f"PROMEDIO DE ALUMNOS EN EL TURNO TARDE:  {promedio_tarde*100:.2f}% ")
+    print (f"PROMEDIO DE ALUMNOS EN EL TURNO MAÑANA: {promedio_mañana*100:.2f}% ")
     
-    
+
 def promedio_por_turno(alumnos):
     cantidad_tarde=0
     cantidad_mañana=0

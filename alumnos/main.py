@@ -36,9 +36,7 @@ def programa_principal():
                 case 6:#Ordemaniento de A-Z y mañana o tarde
                     print("LISTA ORDENADA DE (A-Z)")
                     alumnos_ordenada=csv.ordenar_por_nombre(alumnos)
-                    for a in alumnos_ordenada:
-                        print("-",a.capitalize())
-                    pass
+                    utils.mostrar_alumnos(alumnos_ordenada)
                     print("ORDENADOS POR CURSO: ")
                     primero, segundo, tercero=csv.ordenar_por_curso(alumnos)
                     print(f"ALUMNOS DE 1er AÑO")
