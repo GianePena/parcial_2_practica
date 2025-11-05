@@ -59,7 +59,7 @@ def normalizar_diccionario(nombre, apellido, id):
     }
     return alumno_csv
 
-def crear_alumno(nombre, apellido, id, ruta_archivo, año, division):
+def crear_alumno(nombre, apellido, id, ruta_archivo, año, turno):
     """
     Crea un diccionario para cada alumno necesario para trabajar con las diferentes operaciones de CRUD
     """
@@ -69,7 +69,7 @@ def crear_alumno(nombre, apellido, id, ruta_archivo, año, division):
         "ID": id,
         "ruta_archivo": ruta_archivo,
         "año": año,
-        "division": division
+        "turno": turno
     }
     return nuevo_alumno
 

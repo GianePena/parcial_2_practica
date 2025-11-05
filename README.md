@@ -1,553 +1,233 @@
-# 📚 Sistema de Gestión de Alumnos
+# Sistema de Gestión de Alumnos
 
-> Sistema CRUD completo para la administración de estudiantes organizado por años académicos y turnos, con almacenamiento en archivos CSV.
+Trabajo Práctico - Gestión de alumnos mediante archivos CSV
 
-## 📋 Tabla de Contenidos
+## Descripción
 
-- [Descripción](#-descripción)
-- [Características](#-características)
-- [Requisitos](#-requisitos)
-- [Instalación](#-instalación)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Uso](#-uso)
-- [Funcionalidades Detalladas](#-funcionalidades-detalladas)
-- [Arquitectura del Código](#-arquitectura-del-código)
-- [Validaciones y Seguridad](#-validaciones-y-seguridad)
-- [Manejo de Errores](#-manejo-de-errores)
-- [Ejemplos](#-ejemplos)
-- [Autores](#-autores)
+Este programa permite gestionar información de alumnos de una institución educativa organizados por año (1°, 2° y 3°) y turno (mañana/tarde). Los datos se almacenan en archivos CSV en una estructura de directorios.
 
-## 🎯 Descripción
-
-Sistema de gestión estudiantil desarrollado en Python para administrar información de alumnos de manera organizada y eficiente. La aplicación permite realizar operaciones CRUD (Create, Read, Update, Delete) sobre registros de estudiantes distribuidos en tres años académicos, cada uno con turnos de mañana y tarde.
-
-### ¿Por qué este proyecto?
-
-- **Organización jerárquica**: Datos estructurados por año y turno
-- **Persistencia de datos**: Almacenamiento en archivos CSV
-- **Interfaz simple**: Menú de consola intuitivo
-- **Validaciones robustas**: Control de integridad de datos
-- **Modular y mantenible**: Código organizado en módulos separados
-
-## ✨ Características
-
-- ✅ Listado completo de estudiantes
-- ✅ Filtrado por año académico
-- ✅ Alta de nuevos alumnos
-- ✅ Modificación de datos existentes
-- ✅ Eliminación de registros
-- ✅ Validación de IDs únicos
-- ✅ Manejo automático de archivos CSV
-- ✅ Normalización de datos
-- ✅ Búsqueda eficiente por identificador
-
-## 💻 Requisitos
+## Estructura de Archivos
 
 ```
-Python >= 3.10
+alumnos/
+├── 1er_año/
+│   ├── turno_mañana/
+│   │   └── alumnos_1tm.csv
+│   └── turno_tarde/
+│       └── alumnos_1tt.csv
+├── 2do_año/
+│   ├── turno_mañana/
+│   │   └── alumnos_2tm.csv
+│   └── turno_tarde/
+│       └── alumnos_2tt.csv
+└── 3er_año/
+    ├── turno_mañana/
+    │   └── alumnos_3tm.csv
+    └── turno_tarde/
+        └── alumnos_3tt.csv
 ```
 
-### Librerías estándar utilizadas
+## Archivos del Programa
 
-- `csv` - Manejo de archivos CSV
-- `os` - Operaciones del sistema de archivos
+- `programa_principal.py`: Archivo principal con el menú y la lógica del programa
+- `funciones_csv.py`: Funciones para leer, escribir y manipular archivos CSV
+- `utils.py`: Funciones auxiliares de validación y utilidades
 
-No se requieren dependencias externas.
+## Formato de los CSV
 
-## 🚀 Instalación
+Cada archivo CSV contiene:
 
-### 1. Clonar el repositorio
+- **nombre**: Nombre del alumno
+- **apellido**: Apellido del alumno
+- **ID**: Identificador único del alumno
 
-```bash
-git clone https://github.com/GianePena/parcial_2_practica.git
-cd parcial_2_practica
-```
-
-### 2. Verificar la estructura de carpetas
-
-Asegúrate de que exista la siguiente estructura:
-
-```
-parcial_2_practica/
-├── main.py
-├── funciones_csv.py
-├── utils.py
-└── alumnos/
-    ├── 1er_año/
-    │   ├── turno_mañana/
-    │   │   └── alumnos_1tm.csv
-    │   └── turno_tarde/
-    │       └── alumnos_1tt.csv
-    ├── 2do_año/
-    │   ├── turno_mañana/
-    │   │   └── alumnos_2tm.csv
-    │   └── turno_tarde/
-    │       └── alumnos_2tt.csv
-    └── 3er_año/
-        ├── turno_mañana/
-        │   └── alumnos_3tm.csv
-        └── turno_tarde/
-            └── alumnos_3tt.csv
-```
-
-### 3. Ejecutar la aplicación
-
-```bash
-python main.py
-```
-
-## 📁 Estructura del Proyecto
-
-```
-parcial_2_practica/
-│
-├── main.py                 # Punto de entrada - Menú principal
-├── funciones_csv.py        # Operaciones CRUD sobre archivos CSV
-├── utils.py                # Utilidades y validaciones
-├── README.md               # Este archivo
-│
-└── alumnos/                # Directorio de datos
-    ├── 1er_año/
-    ├── 2do_año/
-    └── 3er_año/
-```
-
-### Formato de archivos CSV
-
-Cada archivo CSV tiene el siguiente formato:
-
-```csv
-nombre,apellido,ID
-lucía,castro,2023-2M-001
-santiago,vargas,2023-2M-002
-maría,gonzález,2023-2M-003
-```
-
-### Modelo de datos
-
-Cada alumno se representa con los siguientes atributos:
-
-| Campo          | Tipo   | Descripción                                     |
-| -------------- | ------ | ----------------------------------------------- |
-| `nombre`       | String | Nombre del estudiante (en minúsculas)           |
-| `apellido`     | String | Apellido del estudiante (en minúsculas)         |
-| `ID`           | String | Identificador único (formato: AAAA-NX-###)      |
-| `año`          | String | Año académico (extraído de la ruta del archivo) |
-| `división`     | String | Turno: "mañana" o "tarde"                       |
-| `ruta_archivo` | String | Ruta completa al archivo CSV correspondiente    |
-
-## 🎮 Uso
-
-### Menú Principal
-
-Al ejecutar el programa, se presenta el siguiente menú:
+## Menú Principal
 
 ```
 --- MENU PRINCIPAL ---
 1- Mostrar alumnos.
-2- Mostar alumno por curso.
+2- Mostrar alumno por curso.
 3- Crear alumno.
 4- Editar alumno.
 5- Eliminar alumno.
 6- Ordenar alumnos.
-7- Estadisticas alumno.
+7- Estadísticas alumnos.
 8- Salir.
-
-Ingrese una opción:
 ```
 
-### Navegación
+## Funcionalidades
 
-1. Ingresa el número de la opción deseada (1-6)
-2. Sigue las instrucciones en pantalla
-3. El sistema validará tus entradas automáticamente
-4. Presiona Enter después de cada entrada
+### 1. Mostrar Alumnos
 
-## 🔧 Funcionalidades Detalladas
+Muestra todos los alumnos cargados en el sistema.
 
-### 1️⃣ Mostrar Todos los Alumnos
+**Salida:**
 
-Muestra un listado completo de todos los estudiantes registrados en el sistema, independientemente de su año o turno.
+```
+MOSTRAR TODOS LOS ALUMNOS
+Nombre completo: Juan Pérez || Curso: 1er_año || Turno: turno_mañana
+Nombre completo: María González || Curso: 2do_año || Turno: turno_tarde
+Nombre completo: Carlos López || Curso: 3er_año || Turno: turno_mañana
+```
 
-**Información mostrada:**
+### 2. Mostrar Alumno por Curso
 
-- Nombre completo
-- ID único
-- Año académico
-- Turno (mañana/tarde)
+Filtra y muestra alumnos de un curso específico (1er_año, 2do_año o 3er_año).
 
-### 2️⃣ Mostrar Alumnos por Curso
+**Entrada:**
 
-Filtra y muestra únicamente los estudiantes de un año académico específico.
+```
+Ingrese el curso por el que desea filtrar (ej: 1er_año): 1er_año
+```
 
-**Opciones disponibles:**
+**Salida:**
 
-- 1er año
-- 2do año
-- 3er año
+```
+FILTRAR ALUMNOS POR CURSO
 
-### 3️⃣ Crear Nuevo Alumno
+--- Mostrando 5 alumno(s) ---
+Nombre completo: Juan Pérez || Curso: 1er_año || Turno: turno_mañana
+Nombre completo: Ana Martínez || Curso: 1er_año || Turno: turno_tarde
+```
 
-Permite registrar un nuevo estudiante en el sistema.
+### 3. Crear Alumno
 
-**Datos solicitados:**
-
-1. Nombre (solo letras)
-2. Apellido (solo letras)
-3. Número de curso (1, 2 o 3)
-4. Turno (mañana/tarde)
-5. ID único (verificado contra duplicados)
+Permite agregar un nuevo alumno al sistema.
 
 **Proceso:**
 
-- Valida todos los datos ingresados
-- Verifica que el ID no exista previamente
-- Crea el registro en el archivo CSV correspondiente
-- Confirma la operación exitosa
-
-### 4️⃣ Editar Alumno Existente
-
-Modifica la información de un estudiante ya registrado.
-
-**Proceso:**
-
-1. Solicita el ID del alumno a editar
-2. Busca el registro en todos los archivos
-3. Muestra los datos actuales
-4. Permite modificar nombre y/o apellido
-5. Actualiza el archivo CSV correspondiente
-
-**Nota:** El ID no puede ser modificado para mantener la integridad referencial.
-
-### 5️⃣ Eliminar Alumno
-
-Elimina permanentemente un registro de estudiante del sistema.
-
-**Proceso:**
-
-1. Solicita el ID del alumno
-2. Busca y muestra los datos del alumno
-3. Solicita confirmación de eliminación
-4. Elimina el registro del archivo CSV
-5. Confirma la operación
-
-⚠️ **Advertencia:** Esta acción es irreversible.
-
-### 6️⃣ Salir
-
-Cierra la aplicación de forma segura, guardando todos los cambios realizados.
-
-## 🏗️ Arquitectura del Código
-
-### `main.py` - Controlador Principal
-
-Contiene el flujo principal de la aplicación:
-
-```python
-# Bucle principal del menú
-while True:
-    mostrar_menu()
-    opcion = input("Ingrese una opción: ")
-    # Procesa la opción seleccionada
 ```
-
-**Responsabilidades:**
-
-- Gestión del menú principal
-- Coordinación entre módulos
-- Control del flujo de la aplicación
-
-### `funciones_csv.py` - Operaciones CRUD
-
-Módulo encargado de todas las operaciones sobre archivos CSV.
-
-#### Funciones principales:
-
-**`listar_archivos(directorio_base)`**
-
-- Recorre recursivamente el directorio de alumnos
-- Retorna lista de rutas de todos los archivos CSV
-- Utiliza `os.walk()` para navegación
-
-**`leer_datos_csv(archivos)`**
-
-- Lee todos los archivos CSV encontrados
-- Construye diccionarios de alumno con metadatos
-- Retorna lista unificada de todos los estudiantes
-
-**`filtrar_por_curso(alumnos, curso)`**
-
-- Filtra la lista de alumnos por año académico
-- Retorna sublista con estudiantes del curso especificado
-
-**`actualizar_csv(ruta_archivo, alumnos_actualizados)`**
-
-- Reescribe un archivo CSV con datos modificados
-- Mantiene el formato y estructura original
-- Maneja encoding UTF-8
-
-**`modificar_alumno(alumnos, id_alumno)`**
-
-- Busca el alumno por ID
-- Permite editar nombre y apellido
-- Actualiza el archivo CSV correspondiente
-
-**`eliminar_alumno(alumnos, id_alumno)`**
-
-- Localiza el registro a eliminar
-- Remueve el alumno de la lista
-- Actualiza el archivo CSV sin el registro eliminado
-
-**`añadir_alumno_csv(nuevo_alumno)`**
-
-- Agrega un nuevo registro al archivo correspondiente
-- Verifica existencia del archivo
-- Escribe en formato CSV correcto
-
-### `utils.py` - Utilidades y Validaciones
-
-Módulo con funciones auxiliares y de validación.
-
-#### Funciones de validación:
-
-**`validar_texto(texto, campo)`**
-
-- Verifica que el texto no esté vacío
-- Valida que contenga solo letras
-- Retorna True/False según validez
-
-**`pedir_id(mensaje, alumnos, validar_existencia=True)`**
-
-- Solicita un ID al usuario
-- Valida formato y existencia según contexto
-- Previene IDs duplicados en creación
-- Verifica existencia en edición/eliminación
-
-**`buscar_por_ID(alumnos, id_buscar)`**
-
-- Busca un alumno por su identificador
-- Retorna el diccionario del alumno o None
-- Búsqueda eficiente en lista de diccionarios
-
-#### Funciones de formateo:
-
-**`normalizar_diccionario(alumno)`**
-
-- Prepara el diccionario para escritura CSV
-- Extrae solo los campos necesarios (nombre, apellido, ID)
-- Retorna diccionario normalizado
-
-**`crear_alumno(nombre, apellido, id_alumno, curso, turno)`**
-
-- Construye la estructura completa de un alumno
-- Determina la ruta del archivo CSV correspondiente
-- Retorna diccionario con todos los metadatos
-
-#### Funciones de interfaz:
-
-**`mostrar_alumnos(alumnos, titulo="Listado de Alumnos")`**
-
-- Formatea e imprime lista de estudiantes
-- Muestra información organizada y legible
-- Incluye título personalizable
-
-**`mostrar_menu()`**
-
-- Imprime el menú principal de opciones
-- Formato consistente y claro
-
-## 🛡️ Validaciones y Seguridad
-
-### Control de Entradas
-
-✅ **Validación de texto**
-
-- Solo se aceptan letras en nombres y apellidos
-- No se permiten números o caracteres especiales
-- Campos obligatorios no pueden estar vacíos
-
-✅ **Validación de IDs**
-
-- Verificación de unicidad en todo el sistema
-- Control de formato de identificador
-- Prevención de duplicados
-
-✅ **Validación de opciones**
-
-- Menú acepta solo números del 1 al 6
-- Curso acepta solo 1, 2 o 3
-- Turno acepta solo "mañana" o "tarde"
-
-✅ **Validación de archivos**
-
-- Verificación de existencia de archivos CSV
-- Control de permisos de lectura/escritura
-- Validación de estructura de directorios
-
-### Normalización de Datos
-
-- **Nombres y apellidos**: Convertidos automáticamente a minúsculas
-- **Turnos**: Normalizados a formato estándar
-- **Espacios**: Eliminados al inicio y final de textos
-
-## ⚠️ Manejo de Errores
-
-El sistema incluye manejo robusto de excepciones:
-
-### Errores de Archivo
-
-```python
-try:
-    # Operación con archivo
-except FileNotFoundError:
-    print("Error: Archivo no encontrado")
-except PermissionError:
-    print("Error: Sin permisos para acceder al archivo")
-except IOError:
-    print("Error: Error de lectura/escritura")
-```
-
-### Errores de CSV
-
-```python
-try:
-    # Lectura/escritura CSV
-except csv.Error:
-    print("Error: Formato CSV inválido")
-except UnicodeDecodeError:
-    print("Error: Problema con codificación del archivo")
-```
-
-### Errores de Validación
-
-- **ID duplicado**: "Error: El ID ya existe en el sistema"
-- **ID no encontrado**: "Error: No se encontró alumno con ese ID"
-- **Campo vacío**: "Error: El campo no puede estar vacío"
-- **Formato inválido**: "Error: Solo se aceptan letras"
-
-### Errores de Datos
-
-- **Fila incompleta**: Se omite y se registra advertencia
-- **Campo faltante**: Se completa con valor por defecto
-- **Tipo incorrecto**: Se convierte o rechaza según contexto
-
-## 📖 Ejemplos
-
-### Ejemplo 1: Crear un nuevo alumno
-
-```
---- MENU PRINCIPAL ---
-1- Mostrar alumnos.
-2- Mostar alumno por curso.
-3- Crear alumno.
-4- Editar alumno.
-5- Eliminar alumno.
-6- Salir.
-
-Ingrese una opción: 3
-
-=== CREAR NUEVO ALUMNO ===
-
-Ingrese el nombre de alumno: María
-Ingrese el apellido de alumno: González
+Ingrese el nombre de alumno: pedro
+Ingrese el apellido de alumno: garcía
 Ingrese el número del curso (1, 2 o 3): 2
 Ingrese el turno (mañana/tarde): mañana
-Ingrese el ID del alumno: 2023-2M-006
-
-✓ Alumno agregado con éxito!
-
-Datos registrados:
-- Nombre: maría gonzález
-- ID: 2023-2M-006
-- Curso: 2do año - Turno mañana
+Ingrese el ID del alumno: 12345
+Alumno agregado por exito!!!
 ```
 
-### Ejemplo 2: Listar alumnos por curso
+El alumno se agregará automáticamente al CSV correspondiente según el curso y turno seleccionados.
+
+### 4. Editar Alumno
+
+Permite modificar el nombre o apellido de un alumno existente.
+
+**Proceso:**
 
 ```
-Ingrese una opción: 2
-
-Ingrese el número de curso (1, 2 o 3): 2
-
-=== ALUMNOS DE 2DO AÑO ===
-
-1. Lucía Castro
-   ID: 2023-2M-001
-   Turno: mañana
-
-2. Santiago Vargas
-   ID: 2023-2M-002
-   Turno: mañana
-
-3. María González
-   ID: 2023-2M-006
-   Turno: mañana
-
-Total de alumnos: 3
+Ingrese el ID del alumno: 12345
+Ingrese el campo a modificar (nombre o apellido): nombre
+Ingrese el nuevo valor para nombre: pedro antonio
+Alumno ID=12345 modificado con éxito.
 ```
 
-### Ejemplo 3: Editar un alumno
+### 5. Eliminar Alumno
+
+Elimina un alumno del sistema por su ID.
+
+**Proceso:**
 
 ```
-Ingrese una opción: 4
-
-=== EDITAR ALUMNO ===
-
-Ingrese el ID del alumno a editar: 2023-2M-006
-
-Alumno encontrado:
-- Nombre: maría gonzález
-- ID: 2023-2M-006
-- Curso: 2do año - Turno mañana
-
-Ingrese el nuevo nombre (dejar vacío para mantener): María José
-Ingrese el nuevo apellido (dejar vacío para mantener):
-
-✓ Alumno modificado exitosamente!
-
-Datos actualizados:
-- Nombre: maría josé gonzález
-- ID: 2023-2M-006
+Ingrese el ID del alumno: 12345
+Alumno ID=12345 eliminado con éxito!!!
 ```
 
-### Ejemplo 4: Eliminar un alumno
+### 6. Ordenar Alumnos
+
+Muestra dos tipos de ordenamiento:
+
+#### Ordenamiento Alfabético (A-Z)
+
+**Salida:**
 
 ```
-Ingrese una opción: 5
-
-=== ELIMINAR ALUMNO ===
-
-Ingrese el ID del alumno a eliminar: 2023-2M-002
-
-Alumno encontrado:
-- Nombre: santiago vargas
-- ID: 2023-2M-002
-- Curso: 2do año - Turno mañana
-
-¿Está seguro que desea eliminar este alumno? (s/n): s
-
-✓ Alumno eliminado exitosamente!
+LISTA ORDENADA DE (A-Z)
+- Ana
+- Carlos
+- Juan
+- María
+- Pedro
 ```
 
-## 📌 Consideraciones Importantes
+#### Ordenamiento por Curso
 
-### Formato de Datos
+**Salida:**
 
-- Todos los nombres y apellidos se almacenan en **minúsculas**
-- Los IDs deben ser **únicos** en todo el sistema
-- El formato sugerido para IDs es: `AAAA-NX-###` (Año-Nivel-Número)
+```
+ORDENADOS POR CURSO:
+ALUMNOS DE 1er AÑO
+Nombre completo: Juan Pérez || Curso: 1er_año || Turno: turno_mañana
+Nombre completo: Ana Martínez || Curso: 1er_año || Turno: turno_tarde
 
-### Sincronización
+ALUMNOS DE 2do AÑO
+Nombre completo: María González || Curso: 2do_año || Turno: turno_tarde
 
-- Los datos se recargan en cada iteración del menú
-- Los cambios se persisten inmediatamente en los archivos CSV
-- No hay caché de datos, siempre se lee del disco
+ALUMNOS DE 3er AÑO
+Nombre completo: Carlos López || Curso: 3er_año || Turno: turno_mañana
+```
 
-### Encoding
+### 7. Estadísticas Alumnos
 
-- Todos los archivos CSV utilizan encoding **UTF-8**
-- Caracteres especiales y acentos son soportados
-- Compatibilidad multiplataforma (Windows, Linux, macOS)
+Muestra estadísticas generales del sistema.
+
+**Salida:**
+
+```
+15 ALUMNOS EN TURNO MAÑANA
+Nombre completo: Juan Pérez || Curso: 1er_año || Turno: turno_mañana
+Nombre completo: Carlos López || Curso: 3er_año || Turno: turno_mañana
+...
+
+10 ALUMNOS EN TURNO TARDE
+Nombre completo: María González || Curso: 2do_año || Turno: turno_tarde
+Nombre completo: Ana Martínez || Curso: 1er_año || Turno: turno_tarde
+...
+
+TOTAL DE ALUMNOS CARGADOS: 25
+PROMEDIO DE ALUMNOS EN EL TURNO TARDE: % 40.00
+PROMEDIO DE ALUMNOS EN EL TURNO MAÑANA: % 60.00
+```
+
+### 8. Salir
+
+Finaliza el programa.
+
+**Salida:**
+
+```
+Hasta luego.
+```
+
+## Validaciones
+
+El programa incluye las siguientes validaciones:
+
+- **IDs únicos**: No permite crear alumnos con IDs duplicados
+- **Campos requeridos**: Verifica que todos los campos estén completos
+- **Formato de texto**: Valida que nombre y apellido sean texto (no números)
+- **Existencia de alumnos**: Verifica que el ID exista antes de editar o eliminar
+- **Opciones del menú**: Solo acepta opciones válidas (1-8)
+- **Cursos válidos**: Solo acepta 1er_año, 2do_año o 3er_año
+- **Turnos válidos**: Solo acepta mañana o tarde
+
+## Cómo Ejecutar
+
+1. Asegúrate de tener la estructura de carpetas y archivos CSV creada
+2. Ejecuta el programa principal:
+   ```bash
+   python programa_principal.py
+   ```
+
+## Requisitos
+
+- Python 3.10 o superior (usa `match-case`)
+- Módulos estándar: `csv`, `os`
+
+## Notas
+
+- Todos los nombres y apellidos se guardan en minúsculas
+- Los datos se muestran con la primera letra en mayúscula
+- Los cambios se guardan automáticamente en los archivos CSV correspondientes
+- El programa recarga los datos en cada iteración del menú
 
 ## 👥 Autores
 
