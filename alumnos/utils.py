@@ -80,7 +80,7 @@ def mostrar_menu():
     print('3- Crear alumno.')
     print('4- Editar alumno.')
     print('5- Eliminar alumno.')
-    print('6- Odenar alumnos.')
+    print('6- Ordenar alumnos.')
     print('7- Estadisticas alumnos.')
     print('8- Salir.')
 
